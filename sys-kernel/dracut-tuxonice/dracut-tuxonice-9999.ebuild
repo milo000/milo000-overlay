@@ -3,7 +3,7 @@
 # $Header: $
 
 EAPI=4
-inherit git
+inherit git-2
 
 DESCRIPTION="TuxOnIce module for dracut"
 HOMEPAGE="https://github.com/milo000/dracut-tuxonice"

@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: /var/cvsroot/gentoo-x86/sys-apps/tuxonice-userui/tuxonice-userui-1.0.ebuild,v 1.10 2011/10/16 17:01:25 pacho Exp $
 
-EAPI="2"
+EAPI="4"
 
 inherit toolchain-funcs eutils
 
@@ -23,13 +23,18 @@ DEPEND="fbsplash? ( >=media-gfx/splashutils-1.5.2.1
 	media-libs/lcms:0 )"
 RDEPEND="${DEPEND}"
 
+src_unpack() {
+	mv "${DISTDIR}/${P}.tar.gz" "${DISTDIR}/${P}.tar"
+	unpack "${P}.tar"
+	mv "${WORKDIR}/${PN}" "${WORKDIR}/${P}"
+}
+
 src_compile() {
 	if use fbsplash; then
 		emake CC="$(tc-getCC)" CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" \
-			USE_FBSPLASH=1 || die "emake tuxoniceui failed"
+			USE_FBSPLASH=1
 	else
-		emake CC="$(tc-getCC)" CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" \
-			|| die "emake tuxoniceui_text failed"
+		emake CC="$(tc-getCC)" CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}"
 	fi
 }
 

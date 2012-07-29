@@ -2,7 +2,7 @@
 
 if [ -z "$SUSPEND_MODULE" ] && command_exists hibernate-ram && \
 	[ -f "/etc/hibernate/ram.conf" ]; then
-	SUSPEND_MODULES="hibernate-script"
+	SUSPEND_MODULE="hibernate-script"
 	do_suspend()
 	{
 		hibernate-ram

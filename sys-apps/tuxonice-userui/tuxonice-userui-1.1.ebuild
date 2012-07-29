@@ -31,7 +31,7 @@ src_unpack() {
 
 src_compile() {
 	if use fbsplash; then
-		emake CC="$(tc-getCC)" CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" \
+		emake CC="$(tc-getCC)" CFLAGS="${CFLAGS} -DUSE_FBSPLASH" LDFLAGS="${LDFLAGS}" \
 			USE_FBSPLASH=1
 	else
 		emake CC="$(tc-getCC)" CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}"

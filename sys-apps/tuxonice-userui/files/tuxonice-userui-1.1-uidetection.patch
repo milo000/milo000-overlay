@@ -1,0 +1,71 @@
+--- userui_core.c.orig	2012-07-30 00:58:59.521940326 +0200
++++ userui_core.c	2012-07-30 00:56:34.085768704 +0200
+@@ -462,15 +462,15 @@
+ 						fprintf(stderr, "%s%s", userui_ops[i]->name, (i + 1) == NUM_UIS ? "" : " ");
+ 				fprintf(stderr, ")\n");
+ 				exit(1);
+-			case 'u':
++			case 'x':
+ 				if (userui_ops[0])
+ 					active_ops = userui_ops[0];
+ 				break;
+-			case 'f':
++			case 'u':
+ 				if (userui_ops[1])
+ 					active_ops = userui_ops[1];
+ 				break;
+-			case 'x':
++			case 'f':
+ 				if (userui_ops[2])
+ 					active_ops = userui_ops[2];
+ 				break;
+@@ -1021,10 +1021,25 @@
+ 	int result = 0;
+ 	int i;
+ 
+-  userui_ops[0] = &userui_text_ops;
++ 	userui_ops[0] = &userui_text_ops;
+ 	userui_ops[1] = USPLASH_OPS;
+ 	userui_ops[2] = FBSPLASH_OPS;
+-	active_ops = &userui_text_ops;
++	
++	/* Initialise all that we can, use the first */
++  	active_ops = NULL;
++
++	for (i = 0; i < NUM_UIS; i++) {
++		if (userui_ops[i] && userui_ops[i]->load)
++			result = userui_ops[i]->load();
++		if (result) {
++			if (test_run)
++				fprintf(stderr, "Failed to initialise %s module.\n", userui_ops[i]->name);
++			else
++				printk("Failed to initialise %s module.\n", userui_ops[i]->name);
++			userui_ops[i] = NULL;
++		} else if (!active_ops)
++			active_ops = userui_ops[i];
++	}
+ 
+ 	handle_params(argc, argv);
+ 	setup_signal_handlers();
+@@ -1040,21 +1055,6 @@
+ 
+ 	prepare_console();
+ 
+-	/* Initialise all that we can, use the first */
+-  active_ops = NULL;
+-	for (i = 0; i < NUM_UIS; i++) {
+-		if (userui_ops[i] && userui_ops[i]->load)
+-			result = userui_ops[i]->load();
+-		if (result) {
+-			if (test_run)
+-				fprintf(stderr, "Failed to initialise %s module.\n", userui_ops[i]->name);
+-			else
+-				printk("Failed to initialise %s module.\n", userui_ops[i]->name);
+-		} else
+-      if (!active_ops)
+-        active_ops = userui_ops[i];
+-	}
+-
+ 	if (active_ops->prepare)
+ 		active_ops->prepare();
+ 

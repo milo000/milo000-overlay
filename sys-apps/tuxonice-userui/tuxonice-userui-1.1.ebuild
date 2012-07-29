@@ -29,6 +29,10 @@ src_unpack() {
 	mv "${WORKDIR}/${PN}" "${WORKDIR}/${P}"
 }
 
+src_prepare() {
+	epatch "${FILESDIR}/${P}-uidetection.patch"
+}
+
 src_compile() {
 	if use fbsplash; then
 		emake CC="$(tc-getCC)" CFLAGS="${CFLAGS} -DUSE_FBSPLASH" LDFLAGS="${LDFLAGS}" \

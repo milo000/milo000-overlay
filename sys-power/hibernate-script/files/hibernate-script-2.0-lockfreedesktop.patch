@@ -1,0 +1,11 @@
+--- scriptlets.d/lock.orig	2009-04-01 04:09:51.000000000 +0200
++++ scriptlets.d/lock	2012-07-29 10:33:59.893939614 +0200
+@@ -24,7 +24,7 @@
+         for session in /home/$user/.dbus/session-bus/*; do
+             if [ -e "$session" ]; then
+                 . $session
+-                su -c "dbus-send --session --dest=org.freedesktop.ScreenSaver --type=method_call /ScreenSaver org.freedesktop.ScreenSaver.Lock" "$user"
++                su -c "dbus-send --print-reply --session --dest=org.freedesktop.ScreenSaver --type=method_call /ScreenSaver org.freedesktop.ScreenSaver.Lock" "$user" > /dev/null
+             fi
+         done
+     done

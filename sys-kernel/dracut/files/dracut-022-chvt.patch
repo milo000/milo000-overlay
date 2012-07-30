@@ -1,0 +1,10 @@
+--- modules.d/90crypt/crypt-lib.sh.orig	2012-07-20 13:11:21.000000000 +0200
++++ modules.d/90crypt/crypt-lib.sh	2012-07-30 02:41:11.533881327 +0200
+@@ -60,6 +60,7 @@
+ 
+             local i=1
+             while [ $i -le $tty_tries ]; do
++                /usr/bin/chvt 1
+                 [ -n "$tty_prompt" ] && \
+                     printf "$tty_prompt [$i/$tty_tries]:" >&2
+                 eval "$tty_cmd" && ret=0 && break

@@ -51,7 +51,9 @@ pkg_setup(){
 
 src_prepare(){
 	epatch "${DISTDIR}"/"${PF_FILE}"
-	epatch "${FILESDIR}"/"4200_fbcondecor-0.9.6.patch"
+	epatch "${FILESDIR}/aufs3-standalone-4.patch"
+	epatch "${FILESDIR}/aufs3-base-4.patch"
+	epatch "${FILESDIR}/4200_fbcondecor-0.9.6.patch"
 }
 
 pkg_postinst() {

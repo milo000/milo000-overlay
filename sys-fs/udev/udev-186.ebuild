@@ -1,6 +1,6 @@
 # Copyright 1999-2012 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
-# $Header: /var/cvsroot/gentoo-x86/sys-fs/udev/udev-186.ebuild,v 1.5 2012/07/30 17:24:24 vapier Exp $
+# $Header: /var/cvsroot/gentoo-x86/sys-fs/udev/Attic/udev-186.ebuild,v 1.6 2012/08/03 15:41:07 williamh dead $
 
 EAPI=4
 
@@ -110,8 +110,6 @@ pkg_setup()
 
 src_prepare()
 {
-	epatch "${FILESDIR}"/${P}-revert-systemd-messup.patch.bz2
-
 	# change rules back to group uucp instead of dialout for now
 	sed -e 's/GROUP="dialout"/GROUP="uucp"/' \
 		-i rules/*.rules \
@@ -127,7 +125,6 @@ src_prepare()
 		eautoreconf
 	else
 		check_default_rules
-		eautoreconf
 		elibtoolize
 	fi
 }
@@ -137,10 +134,8 @@ src_configure()
 	local switches
 
 	switches=(
-		--bindir=/bin
-		--sbindir=/sbin
 		--docdir=/usr/share/doc/${PF}
-		--libdir=/$(get_libdir)
+		--libdir=/usr/$(get_libdir)
 		--with-distro=gentoo
 		--with-html-dir=/usr/share/doc/${PF}/html
 		--with-pci-ids-path=/usr/share/misc/pci.ids
@@ -178,7 +173,7 @@ src_compile()
 	echo 'BUILT_SOURCES: $(BUILT_SOURCES)' > "${T}"/Makefile.extra
 	emake -f Makefile -f "${T}"/Makefile.extra BUILT_SOURCES
 	local targets=(
-		udevd
+		systemd-udevd
 		udevadm
 		libudev.la
 		ata_id
@@ -190,7 +185,8 @@ src_compile()
 		mtd_probe
 		man/udev.7
 		man/udevadm.8
-		man/udevd.8
+		man/systemd-udevd.8
+		man/systemd-udevd.service.8
 	)
 	use keymap && targets+=( keymap )
 	use gudev && targets+=( libgudev-1.0.la )
@@ -211,7 +207,6 @@ src_install()
 		install-libLTLIBRARIES
 		install-includeHEADERS
 		install-libgudev_includeHEADERS
-		install-sbinPROGRAMS
 		install-binPROGRAMS
 		install-rootlibexecPROGRAMS
 		install-udevlibexecPROGRAMS
@@ -241,11 +236,10 @@ src_install()
 	# add final values of variables:
 	targets+=(
 		udevlibexecdir=/lib/udev
-		rootlibexec_PROGRAMS=""
-		bin_PROGRAMS=""
-		sbin_PROGRAMS="udevd udevadm"
+		rootlibexec_PROGRAMS=systemd-udevd
+		bin_PROGRAMS=udevadm
 		lib_LTLIBRARIES="${lib_LTLIBRARIES}"
-		MANPAGES="man/udev.7 man/udevadm.8 man/udevd.8"
+		MANPAGES="man/udev.7 man/udevadm.8 man/systemd-udevd.service.8"
 		MANPAGES_ALIAS="man/systemd-udevd.8"
 		dist_systemunit_DATA="units/systemd-udevd-control.socket \
 			units/systemd-udevd-kernel.socket"
@@ -265,14 +259,13 @@ src_install()
 		use gudev && emake -C docs/gudev DESTDIR="${D}" install
 	fi
 
-	# move pkgconfig data to /usr
-	dodir /usr/$(get_libdir)
-	mv -f "${D}"/$(get_libdir)/pkgconfig "${D}"/usr/$(get_libdir) || die
-
 	prune_libtool_files --all
 
 	# remove rule that should be installed by systemd
 	rm -f "${ED}"/lib/udev/rules.d/99-systemd.rules
+
+	# udevadm is now in /usr/bin
+	dosym ../usr/bin/udevadm /sbin/udevadm
 
 	# Now install rules
 	insinto /lib/udev/rules.d
@@ -330,7 +323,7 @@ pkg_postinst()
 
 	ewarn
 	ewarn "If you build an initramfs including udev, then please"
-	ewarn "make sure the /sbin/udevadm binary gets included,"
+	ewarn "make sure the /usr/bin/udevadm binary gets included,"
 	ewarn "and your scripts changed to use it,as it replaces the"
 	ewarn "old helper apps udevinfo, udevtrigger, ..."
 

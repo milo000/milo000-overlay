@@ -1,0 +1,71 @@
+--- udev-182/configure.ac
++++ udev-182/configure.ac
+@@ -209,6 +209,7 @@
+         prefix:                  ${prefix}
+         rootprefix:              ${rootprefix}
+         sysconfdir:              ${sysconfdir}
++        sbindir:                 ${sbindir}
+         bindir:                  ${bindir}
+         libdir:                  ${libdir}
+         rootlibdir:              ${rootlib_execdir}
+--- udev-182/Makefile.am
++++ udev-182/Makefile.am
+@@ -63,6 +63,7 @@
+ 	-e 's,@libdir\@,$(libdir),g' \
+ 	-e 's,@includedir\@,$(includedir),g' \
+ 	-e 's,@bindir\@,$(bindir),g' \
++	-e 's,@sbindir\@,$(sbindir),g' \
+ 	-e 's,@pkglibexecdir\@,$(libexecdir)/udev,g' \
+ 	< $< > $@ || rm $@
+ 
+@@ -198,12 +199,10 @@
+ INSTALL_DATA_HOOKS += systemd-install-hook
+ endif
+ 
+-bin_PROGRAMS = \
++sbin_PROGRAMS = \
++	udevd \
+ 	udevadm
+ 
+-pkglibexec_PROGRAMS = \
+-	udevd
+-
+ udev_common_sources = \
+ 	src/udev.h \
+ 	src/udev-event.c \
+@@ -316,7 +315,7 @@
+ # ------------------------------------------------------------------------------
+ ata_id_SOURCES = src/ata_id/ata_id.c
+ ata_id_LDADD = libudev-private.la
+-pkglibexec_PROGRAMS += ata_id
++pkglibexec_PROGRAMS = ata_id
+ 
+ # ------------------------------------------------------------------------------
+ cdrom_id_SOURCES = src/cdrom_id/cdrom_id.c
+--- udev-182/src/udev.service.in
++++ udev-182/src/udev.service.in
+@@ -11,4 +11,4 @@
+ OOMScoreAdjust=-1000
+ Sockets=udev-control.socket udev-kernel.socket
+ Restart=on-failure
+-ExecStart=@pkglibexecdir@/udevd
++ExecStart=@sbindir@/udevd
+--- udev-182/src/udev-settle.service.in
++++ udev-182/src/udev-settle.service.in
+@@ -19,7 +19,7 @@
+ Type=oneshot
+ TimeoutSec=180
+ RemainAfterExit=yes
+-ExecStart=@bindir@/udevadm settle
++ExecStart=@sbindir@/udevadm settle
+ 
+ [Install]
+ WantedBy=basic.target
+--- udev-182/src/udev-trigger.service.in
++++ udev-182/src/udev-trigger.service.in
+@@ -7,4 +7,4 @@
+ [Service]
+ Type=oneshot
+ RemainAfterExit=yes
+-ExecStart=@bindir@/udevadm trigger --type=subsystems --action=add ; @bindir@/udevadm trigger --type=devices --action=add
++ExecStart=@sbindir@/udevadm trigger --type=subsystems --action=add ; @sbindir@/udevadm trigger --type=devices --action=add

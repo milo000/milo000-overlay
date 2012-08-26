@@ -13,7 +13,7 @@ SRC_URI="mirror://sourceforge/${PN}/${P}.tar.bz2"
 LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~x86 x86 ~amd64 amd64"
-IUSE="-gtk +tools"
+IUSE="gtk +tools"
 
 DEPEND="gtk? ( =dev-cpp/gtkmm-2* )
 		virtual/pkgconfig"
@@ -23,6 +23,7 @@ RDEPEND="${DEPEND}"
 src_prepare() {
 	# Just in case.
 	eautoreconf
+	epatch "${FILESDIR}"/include-glib.h.patch
 }
 
 src_configure() {

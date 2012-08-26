@@ -20,7 +20,7 @@ RDEPEND=">=virtual/jdk-1.6"
 S=${WORKDIR}
 
 src_unpack() {
-    cp "${DISTDIR}/sbt-launch.jar" "${WORKDIR}/$sbt-launch.jar"
+    cp "${DISTDIR}/sbt-launch.jar" "${WORKDIR}/sbt-launch.jar"
 }
 
 src_install() {

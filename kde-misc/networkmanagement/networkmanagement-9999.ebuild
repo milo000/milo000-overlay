@@ -1,13 +1,11 @@
-# Copyright 1999-2012 Gentoo Foundation
+# Copyright 1999-2013 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI=4
+EAPI=5
 
-KDE_MINIMAL="4.6"
-KDE_LINGUAS="ar ast bs ca ca@valencia cs da de el en_GB eo es et fi fr ga gl hr
-hu is it ja km ko lt lv mai ms nb nds nl nn pa pl pt pt_BR ro ru sk sl sq sv th
-tr ug uk wa zh_CN zh_TW"
+KDE_LINGUAS="ar ca cs da de el es et fa fi fr ga hu it ja kk km lt nb nds nl nn pl
+pt pt_BR se sk sr sr@ijekavian sr@ijekavianlatin sr@latin sv tr uk zh_TW"
 inherit kde4-base
 
 DESCRIPTION="KDE frontend for NetworkManager"
@@ -17,21 +15,20 @@ HOMEPAGE="http://kde.org/"
 LICENSE="GPL-2 LGPL-2"
 KEYWORDS=""
 SLOT="4"
-IUSE="debug"
+IUSE="debug openconnect"
 
 DEPEND="
 	kde-misc/libmm-qt
 	kde-misc/libnm-qt
 	net-misc/mobile-broadband-provider-info
 	>=net-misc/networkmanager-0.9.0
+	openconnect? ( net-misc/openconnect )
 "
 RDEPEND="${DEPEND}"
 
-src_install() {
-	kde4-base_src_install
-
-	# drop some icons that collies with solid-4.7.1
-	for x in 22 32 64; do
-		rm "${ED}/usr/share/icons/oxygen/${x}x${x}/apps/networkmanager.png"
-	done
+src_configure() {
+	local mycmakeargs=(
+		$(cmake-utils_use_with openconnect)
+	)
+	kde4-base_src_configure
 }

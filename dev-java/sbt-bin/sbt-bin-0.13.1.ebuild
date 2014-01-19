@@ -2,13 +2,13 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
-EAPI="2"
+EAPI="5"
 
 inherit java-utils-2
 
 DESCRIPTION="sbt is a build tool for Scala and Java projects that aims to do the basics well"
-HOMEPAGE="http://github.com/harrah/xsbt"
-SRC_URI="http://typesafe.artifactoryonline.com/typesafe/ivy-releases/org.scala-sbt/sbt-launch/${PV}/sbt-launch.jar"
+HOMEPAGE="http://github.com/sbt/sbt"
+SRC_URI="http://repo.typesafe.com/typesafe/ivy-releases/org.scala-sbt/sbt-launch/${PV}/sbt-launch.jar"
 
 LICENSE="BSD"
 SLOT="0"

@@ -1,6 +1,8 @@
+# Copyright 1999-2014 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
+# $Header: /var/cvsroot/gentoo-x86/sys-kernel/dracut/dracut-037-r3.ebuild,v 1.1 2014/06/12 18:47:17 aidecoe Exp $
 
-EAPI="5"
+EAPI=4
 
 inherit bash-completion-r1 eutils linux-info multilib systemd
 
@@ -9,7 +11,7 @@ HOMEPAGE="http://dracut.wiki.kernel.org"
 SRC_URI="mirror://kernel/linux/utils/boot/${PN}/${P}.tar.xz"
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~*"
+KEYWORDS="~alpha ~amd64 ~arm ~ia64 ~ppc ~ppc64 ~sparc ~x86"
 IUSE="debug selinux systemd"
 
 RESTRICT="test"
@@ -45,7 +47,8 @@ PATCHES=(
 	"${FILESDIR}/${PV}-0003-Use-the-same-paths-in-dracut.sh-as-tho.patch"
 	"${FILESDIR}/${PV}-0004-Install-dracut-install-into-libexec-di.patch"
 	"${FILESDIR}/${PV}-0005-modsign-do-not-hardcode-path-to-keyctl.patch"
-	"${FILESDIR}/${PV}-0008-dracut-functions.sh-fix-inst-functions.patch"
+	"${FILESDIR}/${PV}-0006-98systemd-fixup-rootfs-generator-insta.patch"
+	"${FILESDIR}/${PV}-0007-udev-rules-add-uaccess-rules.patch"
 	)
 
 #
@@ -233,7 +236,7 @@ pkg_postinst() {
 		sys-apps/iproute2
 	optfeature \
 		"Measure performance of the boot process for later visualisation" \
-		app-benchmarks/bootchart2 app-admin/killproc sys-process/acct
+		app-benchmarks/bootchart2 sys-apps/usleep sys-process/acct
 	optfeature "Scan for Btrfs on block devices"  sys-fs/btrfs-progs
 	optfeature "Load kernel modules and drop this privilege for real init" \
 		sys-libs/libcap

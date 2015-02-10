@@ -1,4 +1,4 @@
-From 461a523086f2077908bebda6467e6b6d20caba78 Mon Sep 17 00:00:00 2001
+From 99f913857dd38facd8f2af16a8b591fa6d7f2d45 Mon Sep 17 00:00:00 2001
 From: Alexander Tsoy <alexander@tsoy.me>
 Date: Mon, 31 Mar 2014 17:56:13 +0400
 Subject: [PATCH 5/5] modsign: do not hardcode path to keyctl
@@ -22,5 +22,5 @@ index 09285d3..cc0e241 100755
      inst_hook pre-trigger 01 "$moddir/load-modsign-keys.sh"
  
 -- 
-2.0.0
+1.9.3
 

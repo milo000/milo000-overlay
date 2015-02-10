@@ -1,7 +1,7 @@
-From 5825d40138f3738a8b70559af6f6f16927068959 Mon Sep 17 00:00:00 2001
+From e40f005daf74f6b6b62ea2e7fc352f097caf5f13 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Amadeusz=20=C5=BBo=C5=82nowski?= <aidecoe@aidecoe.name>
 Date: Wed, 2 Oct 2013 22:37:09 +0200
-Subject: [PATCH 3/5] Use the same paths in dracut.sh as those set with
+Subject: [PATCH 3/4] Use the same paths in dracut.sh as those set with
  configure script
 
 Makefile alters destination main dracut script and sets dracutbasedir to
@@ -12,7 +12,7 @@ the value of pkglibdir set in configure.
  2 files changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 7383309..842f6b1 100644
+index ceb7096..cab7755 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -103,6 +103,9 @@ install: dracut-version.sh
@@ -26,7 +26,7 @@ index 7383309..842f6b1 100644
  	install -m 0755 mkinitrd-dracut.sh $(DESTDIR)$(bindir)/mkinitrd
  	install -m 0755 lsinitrd.sh $(DESTDIR)$(bindir)/lsinitrd
 diff --git a/dracut.sh b/dracut.sh
-index c6da411..3764d3d 100755
+index c1ef474..b1141de 100755
 --- a/dracut.sh
 +++ b/dracut.sh
 @@ -26,10 +26,13 @@
@@ -61,7 +61,7 @@ index c6da411..3764d3d 100755
  # if we were not passed a config file, try the default one
  if [[ ! -f $conffile ]]; then
      if [[ $allowlocal ]]; then
-@@ -774,7 +774,6 @@ stdloglvl=$((stdloglvl + verbosity_mod_l))
+@@ -773,7 +773,6 @@ stdloglvl=$((stdloglvl + verbosity_mod_l))
  [[ $use_fstab_l ]] && use_fstab=$use_fstab_l
  [[ $mdadmconf_l ]] && mdadmconf=$mdadmconf_l
  [[ $lvmconf_l ]] && lvmconf=$lvmconf_l
@@ -70,5 +70,5 @@ index c6da411..3764d3d 100755
  [[ $tmpdir_l ]] && tmpdir="$tmpdir_l"
  [[ $tmpdir ]] || tmpdir=/var/tmp
 -- 
-2.0.0
+1.9.0
 

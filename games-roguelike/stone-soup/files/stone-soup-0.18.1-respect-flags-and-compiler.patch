@@ -1,6 +1,6 @@
 --- a/Makefile
 +++ b/Makefile
-@@ -105,7 +105,7 @@
+@@ -106,7 +106,7 @@
  # Which C++ standard to support
  STDFLAG = -std=c++11
  
@@ -9,7 +9,7 @@
  CFWARN := 
  CFWARN_L := -Wall -Wformat-security -Wundef
  
-@@ -824,7 +824,6 @@
+@@ -823,7 +823,6 @@
  DEFINES += -DFULLDEBUG
  endif
  ifdef DEBUG
@@ -17,7 +17,7 @@
  DEFINES += -DDEBUG
  endif
  ifndef NOWIZARD
-@@ -1641,7 +1640,7 @@
+@@ -1679,7 +1678,7 @@
          # prove that tiles were generated properly
  	grep tile_info rltiles/*.cc| head
  else
@@ -37,16 +37,16 @@
  endif
  
  # Note: since generation of tiles is done on the host, we don't care about
-@@ -10,7 +10,7 @@
- # Also, cross-compilation with no system libraries for host rather than target
+@@ -11,7 +11,7 @@
  # is not supported.  If host=target, contribs are enough.
  
+ PKGCONFIG = pkg-config
 -CFLAGS := -O2 $(STDFLAG) -g -Wall -Wextra -Wno-parentheses -Wno-unused-parameter
 +CXXFLAGS := $(STDFLAG) -Wall -Wextra -Wno-parentheses -Wno-unused-parameter
  
  ifdef ANDROID
    CXXFLAGS :=
-@@ -27,24 +27,24 @@
+@@ -28,24 +28,24 @@
      PNG_LIB := ../contrib/install/$(ARCH)/lib/libpng.a ../contrib/install/$(ARCH)/lib/libz.a
    endif
  
@@ -78,7 +78,7 @@
  endif
  
  # Attempt to use a full compiler name, to make
-@@ -130,9 +130,9 @@
+@@ -131,9 +131,9 @@
  distclean: clean
  
  %.o: %.cc .cflags

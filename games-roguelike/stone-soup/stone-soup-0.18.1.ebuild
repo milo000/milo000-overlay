@@ -65,8 +65,7 @@ pkg_setup() {
 }
 
 src_prepare() {
-	epatch "${FILESDIR}"/${P}-respect-flags-and-compiler.patch \
-		"${FILESDIR}"/${P}-Use-pkg-config-for-linking-to-ncurses.patch
+	epatch "${FILESDIR}"/${P}-respect-flags-and-compiler.patch
 
 	rm -r contrib/{fonts,freetype,libpng,pcre,sdl2,sdl2-image,sdl2-mixer,sqlite,zlib} || die
 }

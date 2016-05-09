@@ -29,7 +29,7 @@ RDEPEND="
 S="${WORKDIR}"
 
 pkg_nofetch() {
-	einfo "Please download ${P}_x64.deb from ${HOMEPAGE} and place them in ${DISTDIR}"
+	einfo "Please download PureRef-${PV}_x64.deb from ${HOMEPAGE}download.php and place it in ${DISTDIR}"
 }
 
 src_unpack() {

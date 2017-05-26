@@ -1,6 +1,6 @@
 --- a/Makefile
 +++ b/Makefile
-@@ -106,7 +106,7 @@
+@@ -107,7 +107,7 @@
  # Which C++ standard to support
  STDFLAG = -std=c++11
  
@@ -9,7 +9,7 @@
  CFWARN := 
  CFWARN_L := -Wall -Wformat-security -Wundef
  
-@@ -823,7 +823,6 @@
+@@ -770,7 +770,6 @@
  DEFINES += -DFULLDEBUG
  endif
  ifdef DEBUG
@@ -17,12 +17,12 @@
  DEFINES += -DDEBUG
  endif
  ifndef NOWIZARD
-@@ -1679,7 +1678,7 @@
+@@ -1616,7 +1615,7 @@
          # prove that tiles were generated properly
  	grep tile_info rltiles/*.cc| head
  else
 -	+$(MAKE) -C $(RLTILES) all ARCH=$(ARCH) TILES=$(TILES)$(WEBTILES)
-+	$(MAKE) -C $(RLTILES) all V=$(V) ARCH=$(ARCH) DEBUG=$(DEBUG) TILES=$(TILES)$(WEBTILES)
++	+$(MAKE) -C $(RLTILES) all V=$(V) ARCH=$(ARCH) DEBUG=$(DEBUG) TILES=$(TILES)$(WEBTILES)
  endif
  
  $(TILEDEFSRCS) $(TILEDEFHDRS) $(ORIGTILEFILES): build-rltiles
@@ -86,7 +86,7 @@
 +	$(QUIET_HOSTCXX)$(HOSTCXX) $(CXXFLAGS) -MMD -c $< -o $@
  
  $(TILEGEN): $(OBJECTS)
--	$(QUIET_HOSTLINK)$(HOSTCXX) $(OBJECTS) -o $@ $(LDFLAGS)
+-	$(QUIET_HOSTLINK)$(HOSTCXX) $(CFLAGS) $(OBJECTS) -o $@ $(LDFLAGS)
 +	$(QUIET_HOSTLINK)$(HOSTCXX) $(CXXFLAGS) $(OBJECTS) -o $@ $(LDFLAGS) $(LIBS)
  
  .PHONY: all clean distclean

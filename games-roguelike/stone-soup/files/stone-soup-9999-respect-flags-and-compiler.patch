@@ -1,0 +1,92 @@
+--- a/Makefile
++++ b/Makefile
+@@ -107,7 +107,7 @@
+ # Which C++ standard to support
+ STDFLAG = -std=c++11
+ 
+-CFOTHERS := -pipe $(EXTERNAL_FLAGS)
++CFOTHERS := $(EXTERNAL_FLAGS)
+ CFWARN := 
+ CFWARN_L := -Wall -Wformat-security -Wundef
+ 
+@@ -770,7 +770,6 @@
+ DEFINES += -DFULLDEBUG
+ endif
+ ifdef DEBUG
+-CFOTHERS := -ggdb $(CFOTHERS)
+ DEFINES += -DDEBUG
+ endif
+ ifndef NOWIZARD
+@@ -1616,7 +1615,7 @@
+         # prove that tiles were generated properly
+ 	grep tile_info rltiles/*.cc| head
+ else
+-	+$(MAKE) -C $(RLTILES) all ARCH=$(ARCH) TILES=$(TILES)$(WEBTILES)
++	+$(MAKE) -C $(RLTILES) all V=$(V) ARCH=$(ARCH) DEBUG=$(DEBUG) TILES=$(TILES)$(WEBTILES)
+ endif
+ 
+ $(TILEDEFSRCS) $(TILEDEFHDRS) $(ORIGTILEFILES): build-rltiles
+--- a/rltiles/Makefile
++++ b/rltiles/Makefile
+@@ -1,7 +1,7 @@
+ uname_S := $(shell uname -s)
+ 
+ ifneq (,$(findstring MINGW,$(uname_S)))
+-LDFLAGS += -lmingw32
++LIBS += -lmingw32
+ endif
+ 
+ # Note: since generation of tiles is done on the host, we don't care about
+@@ -11,7 +11,7 @@
+ # is not supported.  If host=target, contribs are enough.
+ 
+ PKGCONFIG = pkg-config
+-CFLAGS := -O2 $(STDFLAG) -g -Wall -Wextra -Wno-parentheses -Wno-unused-parameter
++CXXFLAGS := $(STDFLAG) -Wall -Wextra -Wno-parentheses -Wno-unused-parameter
+ 
+ ifdef ANDROID
+   CXXFLAGS :=
+@@ -28,24 +28,24 @@
+     PNG_LIB := ../contrib/install/$(ARCH)/lib/libpng.a ../contrib/install/$(ARCH)/lib/libz.a
+   endif
+ 
+-  CFLAGS += $(PNG_INCLUDE)
+-  LDFLAGS += $(PNG_LIB)
++  CXXFLAGS += $(PNG_INCLUDE)
++  LIBS += $(PNG_LIB)
+ 
+-  CFLAGS += -DUSE_TILE
++  CXXFLAGS += -DUSE_TILE
+ endif
+ 
+ ifdef DEBUG
+-CFLAGS += -O0 -DDEBUG -ggdb
++CXXFLAGS += -O0 -DDEBUG -ggdb
+ endif
+ 
+ ifneq (,$(findstring MINGW,$(uname_S)))
+-LDFLAGS += -lgdi32 -lwinmm -lole32 -loleaut32 -limm32 -lshell32 -lversion -luuid
++LIBS += -lgdi32 -lwinmm -lole32 -loleaut32 -limm32 -lshell32 -lversion -luuid
+ endif
+ ifeq ($(uname_S),Darwin)
+-LDFLAGS += -framework AppKit -framework AudioUnit -framework CoreAudio -framework ForceFeedback -framework Carbon -framework IOKit -framework OpenGL
++LIBS += -framework AppKit -framework AudioUnit -framework CoreAudio -framework ForceFeedback -framework Carbon -framework IOKit -framework OpenGL
+ endif
+ ifeq ($(uname_S),Linux)
+-LDFLAGS += -ldl -lpthread
++LIBS += -ldl -lpthread
+ endif
+ 
+ # Attempt to use a full compiler name, to make
+@@ -131,9 +131,9 @@
+ distclean: clean
+ 
+ %.o: %.cc .cflags
+-	$(QUIET_HOSTCXX)$(HOSTCXX) $(CFLAGS) -MMD -c $< -o $@
++	$(QUIET_HOSTCXX)$(HOSTCXX) $(CXXFLAGS) -MMD -c $< -o $@
+ 
+ $(TILEGEN): $(OBJECTS)
+-	$(QUIET_HOSTLINK)$(HOSTCXX) $(CFLAGS) $(OBJECTS) -o $@ $(LDFLAGS)
++	$(QUIET_HOSTLINK)$(HOSTCXX) $(CXXFLAGS) $(OBJECTS) -o $@ $(LDFLAGS) $(LIBS)
+ 
+ .PHONY: all clean distclean

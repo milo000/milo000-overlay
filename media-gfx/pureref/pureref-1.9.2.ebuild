@@ -7,7 +7,7 @@ inherit unpacker
 
 DESCRIPTION="A simple and lightweight tool for artists to organize and view their reference images."
 HOMEPAGE="http://www.pureref.com/"
-SRC_URI="PureRef-1.7.1_x64.deb"
+SRC_URI="PureRef-${PV}_x64.deb"
 
 LICENSE="freedist no-source-code"
 SLOT="0"

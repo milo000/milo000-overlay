@@ -15,7 +15,7 @@ SRC_URI="https://dev.gentoo.org/~hasufell/distfiles/${PN}.png
 	https://dev.gentoo.org/~hasufell/distfiles/${PN}.svg"
 
 EGIT_REPO_URI="https://github.com/crawl/crawl"
-EGIT_SUBMODULES=( crawl-ref/source/contrib/lua crawl-ref/source/contrib/luajit )
+EGIT_SUBMODULES=()
 
 # 3-clause BSD: mt19937ar.cc, MSVC/stdint.h
 # 2-clause BSD: all contributions by Steve Noonan and Jesse Luehrs
@@ -31,6 +31,7 @@ RESTRICT="test"
 RDEPEND="
 	dev-db/sqlite:3
 	luajit? ( >=dev-lang/luajit-2.0.0 )
+	!luajit? ( dev-lang/lua:= )
 	sys-libs/zlib
 	!ncurses? ( !tiles? ( sys-libs/ncurses ) )
 	ncurses? ( sys-libs/ncurses )
@@ -73,7 +74,6 @@ src_compile() {
 
 	# leave DATADIR at the top
 	myemakeargs=(
-		$(usex luajit "" "BUILD_LUA=yes") # luajit is not bundled
 		USE_LUAJIT=$(usex luajit "yes" "")
 		DATADIR="${GAMES_DATADIR}/${PN}"
 		V=1

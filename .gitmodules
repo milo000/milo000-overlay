@@ -1,3 +1,0 @@
-[submodule "submodules/pg_overlay"]
-	path = submodules/pg_overlay
-	url = https://github.com/perfect7gentleman/pg_overlay.git

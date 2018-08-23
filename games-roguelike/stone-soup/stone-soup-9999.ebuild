@@ -1,15 +1,12 @@
-# Copyright 1999-2015 Gentoo Foundation
+# Copyright 1999-2018 Gentoo Foundation
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-## TODO
-# add sound support (no sound files)
-
-EAPI=5
+EAPI=6
 VIRTUALX_REQUIRED="manual"
-inherit eutils gnome2-utils toolchain-funcs games git-r3
+inherit eutils gnome2-utils toolchain-funcs git-r3
 
-DESCRIPTION="Dungeon Crawl Stone Soup is a role-playing roguelike game of exploration and treasure-hunting in dungeons"
+DESCRIPTION="Role-playing roguelike game of exploration and treasure-hunting in dungeons"
 HOMEPAGE="http://crawl.develz.org/wordpress/"
 SRC_URI="https://dev.gentoo.org/~hasufell/distfiles/${PN}.png
 	https://dev.gentoo.org/~hasufell/distfiles/${PN}.svg"
@@ -55,9 +52,11 @@ DEPEND="${RDEPEND}
 
 S="${WORKDIR}/${P}/crawl-ref/source"
 S_TEST="${WORKDIR}/${P}_test/crawl-ref/source"
+PATCHES=(
+	"${FILESDIR}"/${PN}-0.20.1-rltiles-ldflags-libs.patch
+)
 
 pkg_setup() {
-	games_pkg_setup
 	if use !ncurses && use !tiles ; then
 		ewarn "Neither ncurses nor tiles frontend"
 		ewarn "selected, choosing ncurses only."
@@ -65,30 +64,27 @@ pkg_setup() {
 	fi
 }
 
-src_prepare() {
-	epatch "${FILESDIR}"/${P}-respect-flags-and-compiler.patch
-}
-
 src_compile() {
 	export HOSTCXX=$(tc-getBUILD_CXX)
 
-	# leave DATADIR at the top
 	myemakeargs=(
-		USE_LUAJIT=$(usex luajit "yes" "")
-		DATADIR="${GAMES_DATADIR}/${PN}"
-		V=1
-		prefix="${GAMES_PREFIX}"
-		SAVEDIR="~/.crawl"
 		$(usex debug "FULLDEBUG=y DEBUG=y" "")
-		CFOPTIMIZE="${CXXFLAGS}"
+#		$(usex luajit "" "BUILD_LUA=yes") # luajit is not bundled
+		AR="$(tc-getAR)"
+		CFOPTIMIZE=''
+		CFOTHERS="${CXXFLAGS}"
+		DATADIR="/usr/share/${PN}"
+		GCC="$(tc-getCC)"
+		GXX="$(tc-getCXX)"
 		LDFLAGS="${LDFLAGS}"
 		MAKEOPTS="${MAKEOPTS}"
-		AR="$(tc-getAR)"
-		RANLIB="$(tc-getRANLIB)"
-		CC="$(tc-getCC)"
-		CXX="$(tc-getCXX)"
 		PKGCONFIG="$(tc-getPKG_CONFIG)"
+		RANLIB="$(tc-getRANLIB)"
+		SAVEDIR="~/.crawl"
 		STRIP=touch
+		USE_LUAJIT=$(usex luajit "yes" "")
+		V=1
+		prefix="/usr"
 	)
 
 	if use ncurses || (use !ncurses && use !tiles) ; then
@@ -104,13 +100,11 @@ src_compile() {
 }
 
 src_install() {
-	emake "${myemakeargs[@]}" $(usex tiles "TILES=y" "") DESTDIR="${D}" prefix_fp="" bin_prefix="${D}${GAMES_BINDIR}" install
-	[[ -e "${WORKDIR}"/crawl-ncurses ]] && dogamesbin "${WORKDIR}"/crawl-ncurses
+	emake "${myemakeargs[@]}" $(usex tiles "TILES=y" "") DESTDIR="${D}" prefix_fp="" bin_prefix="${D}/usr/bin" install
+	[[ -e "${WORKDIR}"/crawl-ncurses ]] && dobin "${WORKDIR}"/crawl-ncurses
 
 	# don't relocate docs, needed at runtime
-	rm -rf "${D}${GAMES_DATADIR}"/${PN}/docs/license
-	# missing in 0.17.0+
-	#dodoc "${WORKDIR}"/${MY_P}/README.{txt,pdf}
+	rm -rf "${D}/usr/share/${PN}"/docs/license
 
 	# icons and menu for graphical build
 	if use tiles ; then
@@ -118,17 +112,13 @@ src_install() {
 		doicon -s scalable "${DISTDIR}"/${PN}.svg
 		make_desktop_entry crawl
 	fi
-
-	prepgamesdirs
 }
 
 pkg_preinst() {
-	games_pkg_preinst
 	gnome2_icon_savelist
 }
 
 pkg_postinst() {
-	games_pkg_postinst
 	gnome2_icon_cache_update
 
 	if use tiles && use ncurses ; then

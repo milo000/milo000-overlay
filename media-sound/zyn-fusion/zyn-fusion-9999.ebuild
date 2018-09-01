@@ -30,16 +30,16 @@ src_compile() {
 }
 
 src_install() {
-	dodir "opt/${PN}"
-	exeinto "opt/${PN}"
+	dodir "opt/zyn-fusion"
+	exeinto "opt/zyn-fusion"
 	doexe libzest.so
 	newexe zest zyn-fusion
-	dosym "/opt/${PN}/${PN}" "/usr/bin/${PN}"
-	insinto "opt/${PN}"
+	dosym "/opt/zyn-fusion/zyn-fusion" "/usr/bin/zyn-fusion"
+	insinto "opt/zyn-fusion"
 	doins -r src/osc-bridge/schema
-	dodir "opt/${PN}/font"
-	insinto "opt/${PN}/font"
+	dodir "opt/zyn-fusion/font"
+	insinto "opt/zyn-fusion/font"
 	doins deps/nanovg/example/*.ttf
-	dodir "opt/${PN}/qml"
-	touch "${D}/opt/${PN}/qml/MainWindow.qml"
+	dodir "opt/zyn-fusion/qml"
+	touch "${D}/opt/zyn-fusion/qml/MainWindow.qml"
 }

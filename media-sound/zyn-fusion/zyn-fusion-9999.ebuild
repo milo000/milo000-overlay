@@ -2,7 +2,9 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
-inherit git-r3
+USE_RUBY="ruby25"
+
+inherit git-r3 ruby-single
 
 DESCRIPTION="Zyn-Fusion User Interface"
 HOMEPAGE="https://github.com/mruby-zest/mruby-zest-build"
@@ -12,7 +14,7 @@ LICENSE="LGPL-2.1"
 SLOT="0"
 
 DEPEND="
-	dev-lang/ruby
+	${RUBY_DEPS}
 	media-libs/mesa
 "
 

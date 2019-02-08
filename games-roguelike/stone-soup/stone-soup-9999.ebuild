@@ -43,6 +43,7 @@ RDEPEND="
 	)"
 DEPEND="${RDEPEND}
 	dev-lang/perl
+	dev-python/pyyaml
 	sys-devel/flex
 	virtual/pkgconfig
 	virtual/yacc

@@ -9,6 +9,7 @@ inherit eutils git-r3
 DESCRIPTION="Script to run dedicated X server with discrete nvidia graphics"
 HOMEPAGE="https://github.com/Witko/nvidia-xrun"
 EGIT_REPO_URI="https://github.com/Witko/nvidia-xrun.git"
+EGIT_COMMIT="97febf413d5fa9a7519e0edb63b9ba3e0ec20cd6"
 
 LICENSE="GPL-2"
 SLOT="0"

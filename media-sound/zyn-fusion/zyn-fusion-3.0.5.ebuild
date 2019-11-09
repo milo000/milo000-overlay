@@ -2,16 +2,18 @@
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=7
-USE_RUBY="ruby25"
+USE_RUBY="ruby26"
 
 inherit git-r3 ruby-single
 
 DESCRIPTION="Zyn-Fusion User Interface"
 HOMEPAGE="https://github.com/mruby-zest/mruby-zest-build"
 EGIT_REPO_URI="https://github.com/mruby-zest/mruby-zest-build"
+EGIT_COMMIT="${PV}"
 
 LICENSE="LGPL-2.1"
 SLOT="0"
+KEYWORDS="~amd64 ~x86"
 
 DEPEND="
 	${RUBY_DEPS}
@@ -19,16 +21,21 @@ DEPEND="
 "
 
 RDEPEND="${DEPEND}"
-BDEPEND="net-misc/wget"
+
+pkg_pretend() {
+	if has network-sandbox ${FEATURES}; then
+		die "Requires FEATURES=-network-sandbox"
+	fi
+}
 
 src_prepare() {
 	default
-	emake -j1 setup || die "emake setup failed"
+	emake setup || die "emake setup failed"
 }
 
 src_compile() {
-	emake -j1 builddep || die "emake builddep failed"
-	emake -j1 || die "emake failed"
+	emake builddep || die "emake builddep failed"
+	emake || die "emake failed"
 }
 
 src_install() {

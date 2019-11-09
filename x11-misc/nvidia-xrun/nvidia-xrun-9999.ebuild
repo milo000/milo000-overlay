@@ -2,7 +2,7 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI=6
+EAPI=7
 
 inherit eutils git-r3
 
@@ -17,24 +17,25 @@ KEYWORDS=""
 IUSE=""
 
 RDEPEND="
-		media-libs/mesa
-		sys-power/bbswitch
-		x11-apps/xinit
-		x11-base/xorg-server[xorg]
-		x11-drivers/nvidia-drivers[X,driver]
-		x11-libs/libXrandr"
+	media-libs/mesa
+	sys-power/bbswitch
+	x11-apps/xinit
+	x11-base/xorg-server[xorg]
+	x11-drivers/nvidia-drivers[X,driver]
+	x11-libs/libXrandr
+"
 
 src_prepare() {
-		sed -in -e "/\/nvidia\/xorg\/modules/d" -e "s/\/nvidia/\/opengl\/nvidia/g" nvidia-xorg.conf
-		sed -in -e "s/\/nvidia/\/opengl\/nvidia\/lib/g" nvidia-xinitrc
-		eapply_user
+	default
+	sed -in -e "/\/nvidia\/xorg/d" -e "" -e "s/\/nvidia/\/opengl\/nvidia/g" nvidia-xorg.conf
+	sed -in -e "s/lib64\/nvidia/lib64\/opengl\/nvidia\/lib/g" -e "s/lib32\/nvidia/lib32\/opengl\/nvidia\/lib/g" nvidia-xinitrc
 }
 
 src_install() {
-		dobin nvidia-xrun
-		insinto /etc/X11
-		doins nvidia-xorg.conf
-		insinto /etc/X11/xinit
-		doins nvidia-xinitrc
-
+	dobin nvidia-xrun
+	insinto /etc/X11
+	doins nvidia-xorg.conf
+	insinto /etc/X11/xinit
+	doins nvidia-xinitrc
+	dodir /etc/X11/xinit/nvidia-xinitrc.d
 }

@@ -2,8 +2,8 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Id$
 
-EAPI=5
-inherit unpacker
+EAPI=7
+inherit unpacker xdg-utils
 
 DESCRIPTION="A simple and lightweight tool for artists to organize and view their reference images."
 HOMEPAGE="http://www.pureref.com/"
@@ -26,6 +26,9 @@ RDEPEND="
 	x11-libs/libxcb
 "
 
+QA_PRESTRIPPED="usr/bin/PureRef"
+QA_PREBUILT="usr/bin/PureRef"
+
 S="${WORKDIR}"
 
 pkg_nofetch() {
@@ -35,12 +38,26 @@ pkg_nofetch() {
 src_unpack() {
 	unpack_deb ${A}
 }
+
 src_prepare() {
+	mv usr/share/doc/pureref usr/share/doc/pureref-${PV}
 	sed -i -e "/^Version=${PV}$/d" usr/share/applications/pureref.desktop || die "sed failed!"
+
+	default
 }
 
 src_install() {
 	dobin usr/bin/PureRef
 	insinto /usr
 	doins -r usr/share
+}
+
+pkg_postinst() {
+	xdg_desktop_database_update
+	xdg_mimeinfo_database_update
+}
+
+pkg_postrm() {
+	xdg_desktop_database_update
+	xdg_mimeinfo_database_update
 }

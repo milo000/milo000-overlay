@@ -1,0 +1,36 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -65,6 +65,7 @@ option(USE_SHARED_JPEGLIB "Use your installed copy of jpeglib" off)
+ option(USE_SHARED_ZLIB    "Use your installed copy of zlib" off)
+ option(USE_SHARED_LIBARCHIVE "Use your installed copy of libarchive" off)
+ option(USE_SHARED_LIBPNG  "Use your installed copy of libpng" off)
++option(USE_SHARED_LIBWEBP "Use your installed copy of libwebp" off)
+ option(USE_SHARED_TINYXML "Use your installed copy of tinyxml" off)
+ option(USE_SHARED_PIXMAN  "Use your installed copy of pixman" off)
+ option(USE_SHARED_FREETYPE "Use shared FreeType library" off)
+@@ -232,8 +233,12 @@ add_definitions(-DPNG_NO_MMX_CODE) # Do not use MMX optimizations in PNG code
+ 
+ # libwebp
+ if(WITH_WEBP_SUPPORT)
+-  set(WEBP_LIBRARIES webp webpdemux webpmux)
+-  set(WEBP_INCLUDE_DIR ${LIBWEBP_DIR}/src)
++  if(USE_SHARED_LIBWEBP)
++    find_package(WebP REQUIRED)
++  else()
++    set(WEBP_LIBRARIES webp webpdemux webpmux)
++    set(WEBP_INCLUDE_DIR ${LIBWEBP_DIR}/src)
++  endif()
+   include_directories(${WEBP_INCLUDE_DIR})
+ endif()
+ 
+--- a/third_party/CMakeLists.txt
++++ b/third_party/CMakeLists.txt
+@@ -32,7 +32,7 @@ if(NOT USE_SHARED_GIFLIB)
+   add_subdirectory(giflib)
+ endif()
+ 
+-if(WITH_WEBP_SUPPORT)
++if(WITH_WEBP_SUPPORT AND NOT USE_SHARED_LIBWEBP)
+   # Enable img2webp so "webpmux" library is built
+   set(WEBP_BUILD_IMG2WEBP ON CACHE BOOL "Build the img2webp animation tool.")
+   add_subdirectory(libwebp)

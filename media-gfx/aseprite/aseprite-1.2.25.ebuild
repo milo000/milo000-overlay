@@ -14,18 +14,9 @@ PATCHES=( "${FILESDIR}/${P}-system_libarchive.patch"
 	"${FILESDIR}/${P}-system_libwebp.patch"
 	"${FILESDIR}/FindWebP.cmake.patch" )
 
-if [[ ${PV} = 9999* ]]; then
-	inherit git-r3
-	EGIT_REPO_URI="https://github.com/aseprite/aseprite"
-	EGIT_BRANCH="master"
-	if [[ ${PV} != 9999* ]]; then
-		EGIT_COMMIT="v${PV/_/-}"
-	fi
-else
-	SRC_URI="https://github.com/${PN}/${PN}/releases/download/v${PV//_/-}/${PN^}-v${PV//_/-}-Source.zip"
-	KEYWORDS="~amd64 ~x86"
-	S="${WORKDIR}"
-fi
+SRC_URI="https://github.com/${PN}/${PN}/releases/download/v${PV//_/-}/${PN^}-v${PV//_/-}-Source.zip"
+KEYWORDS="~amd64 ~x86"
+S="${WORKDIR}"
 
 IUSE="
 	debug
@@ -38,7 +29,7 @@ RDEPEND="
 	app-text/cmark
 	dev-libs/expat
 	dev-libs/tinyxml
-	=media-gfx/aseprite-skia-9999-r71[debug=]
+	=media-gfx/aseprite-skia-9999-r81[debug=]
 	media-libs/freetype:2
 	>=media-libs/giflib-5.0
 	media-libs/fontconfig
@@ -87,8 +78,9 @@ src_configure() {
 		-DWITH_QT_THUMBNAILER="$(usex kde)"
 		-DWITH_WEBP_SUPPORT="$(usex webp)"
 		-DENABLE_MEMLEAK="$(usex memleak)"
-		-DSKIA_DIR="/var/lib/aseprite-skia"
-		-DSKIA_OUT_DIR="/var/lib/aseprite-skia/out/Release"
+		-DSKIA_DIR="/usr/lib/aseprite-skia"
+		-DSKIA_LIBRARY="/usr/lib/aseprite-skia/out/Release/libskia.a"
+		-DSKSHAPER_LIBRARY="/usr/lib/aseprite-skia/out/Release/libskshaper.a"
 	)
 
 	cmake-utils_src_configure

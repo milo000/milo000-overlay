@@ -1,6 +1,6 @@
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -63,6 +63,7 @@ option(USE_SHARED_CURL    "Use your installed copy of curl" off)
+@@ -60,6 +60,7 @@ option(USE_SHARED_CURL    "Use your installed copy of curl" off)
  option(USE_SHARED_GIFLIB  "Use your installed copy of giflib" off)
  option(USE_SHARED_JPEGLIB "Use your installed copy of jpeglib" off)
  option(USE_SHARED_ZLIB    "Use your installed copy of zlib" off)
@@ -8,9 +8,9 @@
  option(USE_SHARED_LIBPNG  "Use your installed copy of libpng" off)
  option(USE_SHARED_TINYXML "Use your installed copy of tinyxml" off)
  option(USE_SHARED_PIXMAN  "Use your installed copy of pixman" off)
-@@ -203,6 +204,15 @@ else()
- endif()
- include_directories(${ZLIB_INCLUDE_DIRS})
+@@ -217,6 +218,15 @@ endif()
+ include_directories(${PNG_INCLUDE_DIRS})
+ add_definitions(-DPNG_NO_MMX_CODE) # Do not use MMX optimizations in PNG code
  
 +# libarchive
 +if(USE_SHARED_LIBARCHIVE)
@@ -21,10 +21,10 @@
 +  set(ARCHIVE_LIBRARIES archive_static)
 +endif()
 +
- # libpng
- if(USE_SHARED_LIBPNG)
-   find_package(PNG REQUIRED)
-@@ -296,7 +306,7 @@ if(USE_SHARED_CMARK)
+ # libwebp
+ if(WITH_WEBP_SUPPORT)
+   set(WEBP_LIBRARIES webp webpdemux libwebpmux)
+@@ -293,7 +303,7 @@ if(USE_SHARED_CMARK)
  else()
    add_definitions(-DCMARK_STATIC_DEFINE)
    set(CMARK_LIBRARIES libcmark_static)
@@ -33,6 +33,8 @@
  endif()
  
  if(REQUIRE_CURL)
+diff --git a/src/app/CMakeLists.txt b/src/app/CMakeLists.txt
+index e1e3bc1ae..d5694b496 100644
 --- a/src/app/CMakeLists.txt
 +++ b/src/app/CMakeLists.txt
 @@ -91,9 +91,6 @@ if(WITH_WEBP_SUPPORT)
@@ -45,7 +47,7 @@
  ######################################################################
  # app-lib target
  
-@@ -638,7 +635,7 @@ target_link_libraries(app-lib
+@@ -652,7 +649,7 @@ target_link_libraries(app-lib
    ${FREETYPE_LIBRARIES}
    ${HARFBUZZ_LIBRARIES}
    json11
@@ -54,9 +56,11 @@
    fmt
    tinyexpr)
  
+diff --git a/third_party/CMakeLists.txt b/third_party/CMakeLists.txt
+index ffd1c0cfc..4839d4097 100644
 --- a/third_party/CMakeLists.txt
 +++ b/third_party/CMakeLists.txt
-@@ -105,16 +105,18 @@ endif()
+@@ -104,16 +104,18 @@ endif()
  add_subdirectory(json11)
  
  # libarchive

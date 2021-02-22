@@ -19,16 +19,11 @@ DEPOT_TOOLS_COMMIT="master"
 LICENSE="BSD"
 SLOT="0"
 KEYWORDS="~amd64 ~x86"
-IUSE="debug webp"
+IUSE="debug"
 
 DEPEND="${PYTHON_DEPS}"
 RDEPEND="
-	dev-libs/expat
-	dev-util/ninja
-	media-libs/libjpeg-turbo
-	media-libs/libpng
-	webp? ( media-libs/libwebp )
-	sys-libs/zlib"
+	dev-util/ninja"
 BDEPEND=""
 
 src_unpack() {
@@ -46,12 +41,12 @@ src_configure() {
 	local myskiaargs=(
 		is_debug=$(usex debug true false)
 		is_official_build=true
-		skia_use_system_expat=true
+		skia_use_system_expat=false
 		skia_use_system_icu=false # Samples won't build
-		skia_use_system_libjpeg_turbo=true
-		skia_use_system_libpng=true
-		skia_use_system_libwebp=$(usex webp true false)
-		skia_use_system_zlib=true
+		skia_use_system_libjpeg_turbo=false
+		skia_use_system_libpng=false
+		skia_use_system_libwebp=false
+		skia_use_system_zlib=false
 	)
 
 	cd "${S}"
@@ -60,18 +55,20 @@ src_configure() {
 }
 
 src_compile() {
-	ninja -C "out/$(usex debug Debug Release)" skia || die "Failed to compile skia"
+	ninja -C "out/$(usex debug Debug Release)" skia modules || die "Failed to compile skia"
 }
 
 src_install() {
-	insinto /var/lib/aseprite-skia/
+	insinto /usr/lib/aseprite-skia/
 	doins -r include
-	insinto /var/lib/aseprite-skia/src
-	doins -r src/gpu
-	insinto /var/lib/aseprite-skia/third_party
-	doins -r third_party/skcms
+	doins -r modules
 
-	insinto /var/lib/aseprite-skia/out/$(usex debug Debug Release)
-	dodir /var/lib/aseprite-skia/out/$(usex debug Debug Release)
+	insinto /usr/lib/aseprite-skia/out/$(usex debug Debug Release)
+	dodir /usr/lib/aseprite-skia/out/$(usex debug Debug Release)
 	newins out/*/libskia.a libskia.a
+	newins out/*/libparticles.a libparticles.a
+	newins out/*/libskottie.a libskottie.a
+	newins out/*/libskresources.a libskresources.a
+	newins out/*/libsksg.a libsksg.a
+	newins out/*/libskshaper.a libskshaper.a
 }

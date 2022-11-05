@@ -11,7 +11,7 @@ EGIT_REPO_URI="https://github.com/mobile-shell/mosh.git"
 
 LICENSE="GPL-3"
 SLOT="0"
-KEYWORDS="~alpha ~amd64 ~arm ~arm64 ~ia64 ~mips ~ppc ~ppc64 ~sparc ~x86 ~amd64-linux ~x86-linux ~x64-macos"
+KEYWORDS=""
 IUSE="+client examples +mosh-hardening +server ufw +utempter"
 
 REQUIRED_USE="

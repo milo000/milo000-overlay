@@ -3,7 +3,7 @@
 
 EAPI=8
 
-CHROMIUM_VERSION="132"
+CHROMIUM_VERSION="134"
 CHROMIUM_LANGS="
 	af
 	am
@@ -167,11 +167,11 @@ src_prepare() {
 	# Remove scripts that will most likely break things.
 	rm -vf ${VIVALDI_HOME}/update-{ffmpeg,widevine} || die
 
-	pushd ${VIVALDI_HOME}/locales > /dev/null || die
+	pushd ${VIVALDI_HOME}/locales >/dev/null || die
 	rm ja-KS.pak || die # No flag for Kansai as not in IETF list.
-	rm kmr.pak || die # No flag for Kurmanji.
+	rm kmr.pak || die   # No flag for Kurmanji.
 	chromium_remove_language_paks
-	popd > /dev/null || die
+	popd >/dev/null || die
 
 	if use proprietary-codecs; then
 		einfo Bundled $($(tc-getSTRINGS) ${VIVALDI_HOME}/lib/libffmpeg.so | grep -m1 "^FFmpeg version ")
@@ -203,18 +203,18 @@ src_install() {
 
 	if use proprietary-codecs; then
 		dosym ../../usr/$(get_libdir)/chromium/libffmpeg.so$(usex ffmpeg-chromium .${CHROMIUM_VERSION} "") \
-			  /${VIVALDI_HOME}/libffmpeg.so.$(ver_cut 1-2)
+			/${VIVALDI_HOME}/libffmpeg.so.$(ver_cut 1-2)
 	fi
 
 	if use widevine; then
 		dosym ../../usr/$(get_libdir)/chromium-browser/WidevineCdm \
-			  /${VIVALDI_HOME}/WidevineCdm
+			/${VIVALDI_HOME}/WidevineCdm
 	else
 		rm "${ED}"/${VIVALDI_HOME}/WidevineCdm || die
 	fi
 
 	case ${PN} in
-		vivaldi) dosym ${VIVALDI_PN} /usr/bin/${PN} ;;
-		vivaldi-snapshot) dosym ${PN} /${VIVALDI_HOME}/vivaldi ;;
+	vivaldi) dosym ${VIVALDI_PN} /usr/bin/${PN} ;;
+	vivaldi-snapshot) dosym ${PN} /${VIVALDI_HOME}/vivaldi ;;
 	esac
 }

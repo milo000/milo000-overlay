@@ -3,7 +3,7 @@
 
 EAPI=8
 
-CHROMIUM_VERSION="142"
+CHROMIUM_VERSION="144"
 CHROMIUM_LANGS="
 	af
 	am
@@ -166,15 +166,14 @@ src_prepare() {
 	rm -vf ${VIVALDI_HOME}/update-{ffmpeg,widevine} || die
 
 	pushd ${VIVALDI_HOME}/locales >/dev/null || die
-	rm ja-KS.pak || die # No flag for Kansai as not in IETF list.
-	rm kmr.pak || die   # No flag for Kurmanji.
+	rm ja-KS*.pak || die # No flag for Kansai as not in IETF list.
+	rm kmr*.pak || die   # No flag for Kurmanji.
 	chromium_remove_language_paks
 	popd >/dev/null || die
 
 	if use proprietary-codecs; then
-		einfo Bundled $($(tc-getSTRINGS) ${VIVALDI_HOME}/lib/libffmpeg.so | grep -m1 "^FFmpeg version ")
-		rm ${VIVALDI_HOME}/lib/libffmpeg.so || die
-		rmdir ${VIVALDI_HOME}/lib || die
+		einfo Bundled $($(tc-getSTRINGS) ${VIVALDI_HOME}/libffmpeg.so | grep -m1 "^FFmpeg version ")
+		rm ${VIVALDI_HOME}/libffmpeg.so || die
 	fi
 
 	# Qt5 is obsolete now.

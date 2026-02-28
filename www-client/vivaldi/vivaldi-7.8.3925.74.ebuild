@@ -1,4 +1,4 @@
-# Copyright 1999-2025 Gentoo Authors
+# Copyright 1999-2026 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
@@ -48,6 +48,7 @@ CHROMIUM_LANGS="
 	jbo
 	ka
 	kab
+	kmr
 	kn
 	ko
 	lt
@@ -109,7 +110,6 @@ SLOT="0"
 KEYWORDS="-* ~amd64"
 IUSE="ffmpeg-chromium gtk proprietary-codecs qt6 widevine"
 RESTRICT="bindist mirror"
-#REQUIRED_USE="ffmpeg-chromium? ( proprietary-codecs )"
 
 RDEPEND="
 	>=app-accessibility/at-spi2-core-2.46.0:2
@@ -134,7 +134,7 @@ RDEPEND="
 	x11-libs/pango
 	gtk? ( gui-libs/gtk:4 x11-libs/gtk+:3 )
 	proprietary-codecs? (
-		!ffmpeg-chromium? ( >=media-video/ffmpeg-6.1-r1:0/58.60.60[chromium] )
+		!ffmpeg-chromium? ( media-video/ffmpeg:0/60.62.62[chromium] )
 		ffmpeg-chromium? ( media-video/ffmpeg-chromium:${CHROMIUM_VERSION} )
 	)
 	qt6? ( dev-qt/qtbase:6[gui,widgets] )
@@ -163,13 +163,12 @@ src_prepare() {
 	rmdir etc/{cron.daily/,} ${VIVALDI_HOME}/cron/ || die
 
 	# Remove scripts that will most likely break things.
-	rm -vf ${VIVALDI_HOME}/update-{ffmpeg,widevine} || die
+	rm -vf ${VIVALDI_HOME}/update-ffmpeg || die
 
-	pushd ${VIVALDI_HOME}/locales >/dev/null || die
-	rm ja-KS*.pak || die # No flag for Kansai as not in IETF list.
-	rm kmr*.pak || die   # No flag for Kurmanji.
+	pushd ${VIVALDI_HOME}/locales > /dev/null || die
+	rm ja-KS.pak ja-KS_*.pak || die # No flag for Kansai as not in IETF list.
 	chromium_remove_language_paks
-	popd >/dev/null || die
+	popd > /dev/null || die
 
 	if use proprietary-codecs; then
 		einfo Bundled $($(tc-getSTRINGS) ${VIVALDI_HOME}/libffmpeg.so | grep -m1 "^FFmpeg version ")
@@ -200,18 +199,16 @@ src_install() {
 
 	if use proprietary-codecs; then
 		dosym ../../usr/$(get_libdir)/chromium/libffmpeg.so$(usex ffmpeg-chromium .${CHROMIUM_VERSION} "") \
-			/${VIVALDI_HOME}/libffmpeg.so.$(ver_cut 1-2)
+			  /${VIVALDI_HOME}/libffmpeg.so.$(ver_cut 1-2)
 	fi
 
 	if use widevine; then
 		dosym ../../usr/$(get_libdir)/chromium-browser/WidevineCdm \
-			/${VIVALDI_HOME}/WidevineCdm
-	else
-		rm "${ED}"/${VIVALDI_HOME}/WidevineCdm || die
+			  /${VIVALDI_HOME}/WidevineCdm
 	fi
 
 	case ${PN} in
-	vivaldi) dosym ${VIVALDI_PN} /usr/bin/${PN} ;;
-	vivaldi-snapshot) dosym ${PN} /${VIVALDI_HOME}/vivaldi ;;
+		vivaldi) dosym ${VIVALDI_PN} /usr/bin/${PN} ;;
+		vivaldi-snapshot) dosym ${PN} /${VIVALDI_HOME}/vivaldi ;;
 	esac
 }

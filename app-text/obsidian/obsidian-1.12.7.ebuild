@@ -78,9 +78,10 @@ src_install() {
 
 	# permissions
 	fperms 4755 "${INSTALL_DIR}/chrome-sandbox" || die
-	fperms +x "${INSTALL_DIR}/obsidian" || die
+	fperms +x "${INSTALL_DIR}/obsidian" "${INSTALL_DIR}/obsidian-cli" || die
 
 	# executable
 	dosym "${INSTALL_DIR}/obsidian" "/usr/bin/obsidian"
+	dosym "${INSTALL_DIR}/obsidian-cli" "/usr/bin/obsidian-cli"
 
 }

@@ -15,6 +15,7 @@ KEYWORDS="~amd64"
 IUSE="wayland X"
 
 DEPEND="
+	dev-cpp/cli11
 	dev-qt/qtbase:6[dbus,gui,widgets,wayland?]
 	dev-qt/qtmultimedia:6
 	wayland? ( kde-plasma/layer-shell-qt )

@@ -49,10 +49,10 @@ src_prepare() {
 	default
 
 	# fix desktop file
-	sed -i 's|/opt/Obsidian/obsidian|/opt/obsidian/obsidian|g' "${S}/usr/share/applications/obsidian.desktop"
+	sed -i 's|/opt/Obsidian/obsidian|/opt/obsidian/obsidian|g' "${S}/usr/share/applications/md.obsidian.Obsidian.desktop"
 
 	if use wayland; then
-		sed -i "s|Exec=/opt/obsidian/obsidian %U|Exec=/opt/obsidian/obsidian --enable-features=UseOzonePlatform --ozone-platform=wayland %U|" "${S}/usr/share/applications/obsidian.desktop"
+		sed -i "s|Exec=/opt/obsidian/obsidian %U|Exec=/opt/obsidian/obsidian --enable-features=UseOzonePlatform --ozone-platform=wayland %U|" "${S}/usr/share/applications/md.obsidian.Obsidian.desktop"
 	fi
 }
 
@@ -65,7 +65,7 @@ src_install() {
 	doins -r opt/Obsidian/*
 
 	# desktop file from deb
-	domenu usr/share/applications/obsidian.desktop
+	domenu usr/share/applications/md.obsidian.Obsidian.desktop
 
 	if use appindicator; then
 		dosym ../../usr/lib64/libayatana-appindicator3.so "${INSTALL_DIR}/libappindicator3.so"

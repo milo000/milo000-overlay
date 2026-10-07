@@ -76,10 +76,6 @@ src_install() {
 		doicon --size "${size}" "usr/share/icons/hicolor/${size}x${size}/apps/${PN}.png"
 	done
 
-	# MIME from deb
-	insinto /usr/share/mime/packages
-	doins usr/share/mime/packages/obsidian.xml
-
 	# permissions
 	fperms 4755 "${INSTALL_DIR}/chrome-sandbox" || die
 	fperms +x "${INSTALL_DIR}/obsidian" "${INSTALL_DIR}/obsidian-cli" || die
